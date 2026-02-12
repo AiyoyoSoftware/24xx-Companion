@@ -1,5 +1,6 @@
 // 24XX SRD CONTENT
 // Text CC BY Jason Tocci
+import { useReferenceStore } from '../store/referenceStore'
 
 const SRD_NAMES = {
     first: ["Aeon", "Cygnus", "Kael", "Nyx", "Orion", "Pax", "Ria", "Sol", "Vea", "Zane"],
@@ -7,78 +8,63 @@ const SRD_NAMES = {
     surnames: [
         "Acker", "Black", "Cruz", "Dallas", "Engel", "Fox", "Gee", "Haak", "Iyer", "Joshi",
         "Kask", "Lee", "Moss", "Nash", "Park", "Qadir", "Singh", "Tran", "Ueda", "Zheng"
-    ],
-    nicknames: [
-        "Ace", "Bliss", "Crater", "Dart", "Edge", "Fuse", "Gray", "Huggy", "Ice", "Jinx",
-        "Killer", "Lucky", "Mix", "Nine", "Prof", "Red", "Sunny", "Treble", "V8", "Zero"
-    ],
-    shipNames: [
-        "Arion", "Blackjack", "Caleuche", "Canary", "Caprice", "Chance", "Darter", "Falkor",
-        "Highway Star", "Moonshot", "Morgenstern", "Phoenix", "Peregrine", "Restless",
-        "Silver Blaze", "Stardust", "Sunchaser", "Swift", "Thunder Road", "Wayfarer"
-    ]
-}
-
-const SRD_TABLES = {
-    // Specialties (formerly Roles/Concepts)
-    specialty: ["Face", "Muscle", "Psychic", "Medic", "Sneak", "Tech"],
-
-    // Origins / Alien Traits
-    trait: ["Electric current", "Wings", "Natural camouflage", "Six-limbed", "Amphibious", "Night vision", "Hardened scales", "Telepathic"],
-
-    // Details/Demeanor
-    demeanor: [
-        "Anxious", "Appraising", "Blunt", "Brooding", "Calming", "Casual", "Cold", "Curious",
-        "Dramatic", "Dry", "Dull", "Earnest", "Formal", "Gentle", "Innocent", "Knowing",
-        "Prickly", "Reckless", "Terse", "Weary"
-    ],
-
-    // Contacts
-    contact: [
-        "Arcimboldo, quirky tech dealer", "Aurora, wealthy collector", "Blackout, evidence cleaner",
-        "Bleach, janitor android assassin", "Bron, security chief", "Bullet, android gun runner",
-        "Carryout, courier", "Fisher, street kid", "Ginseng, drug dealer", "Hot Ticket, fence",
-        "Kaiser, loan shark", "Osiris, sawbones", "Powder Blue, android fixer", "Reacher, merc leader",
-        "Rhino, bodyguard", "Sam, journalist", "Shifter, chop-shop owner", "Walleye, info broker",
-        "Whistler, getaway driver", "X, corporate broker"
-    ],
-
-    // Missions / Jobs
-    job: [
-        "Deal with an unusual threat", "Investigate something inexplicable", "Retrieve a thing from a location",
-        "Escort a VIP", "Sabotage a facility", "Rescue a prisoner", "Survey a dangerous planet",
-        "Negotiate a treaty", "Smuggle contraband", "Defend a settlement"
     ]
 }
 
 export const getRandomOption = (key) => {
-    const list = SRD_TABLES[key] || []
+    // Access the store directly to get the current state
+    const tables = useReferenceStore.getState().tables || {}
+    const list = tables[key] || []
+
     if (list.length === 0) return "Unknown"
     return list[Math.floor(Math.random() * list.length)]
 }
 
 export const OracleService = {
-    // Accessors
-    getSpecialties: () => SRD_TABLES.specialty,
-    getTraits: () => SRD_TABLES.trait,
-    getDemeanors: () => SRD_TABLES.demeanor,
-    getContacts: () => SRD_TABLES.contact,
-    getJobs: () => SRD_TABLES.job,
-    getShipNames: () => SRD_NAMES.shipNames,
+    // Accessors - Now pulling from store
+    getSpecialties: () => useReferenceStore.getState().specialties, // Specialties are separate from tables
+    getTraits: () => useReferenceStore.getState().traits, // Traits are separate
+
+    // Dynamic Tables
+    getDemeanors: () => useReferenceStore.getState().tables?.demeanor || [],
+    getContacts: () => [], // Contacts removed from SRD request or need to be added to tables if desired. Returning empty for now to avoid crash if used.
+    getJobs: () => useReferenceStore.getState().tables?.mission || [],
+    getShipNames: () => useReferenceStore.getState().tables?.shipName || [],
+    getNicknames: () => useReferenceStore.getState().tables?.nicknames || [],
 
     // RNG Methods
-    rollSpecialty: () => getRandomOption('specialty'),
-    rollTrait: () => getRandomOption('trait'),
+    rollSpecialty: () => {
+        const list = useReferenceStore.getState().specialties
+        if (!list || list.length === 0) return "Unknown"
+        return list[Math.floor(Math.random() * list.length)]
+    },
+    rollTrait: () => {
+        // Traits might be empty initially for Aliens, handled in UI usually. 
+        // But for RNG:
+        const list = useReferenceStore.getState().traits
+        return list.length > 0 ? list[Math.floor(Math.random() * list.length)] : "Unknown"
+    },
     rollDemeanor: () => getRandomOption('demeanor'),
-    rollContact: () => getRandomOption('contact'),
-    rollJob: () => getRandomOption('job'),
+    rollJob: () => getRandomOption('mission'),
+    rollShipName: () => getRandomOption('shipName'),
+    rollNickname: () => getRandomOption('nicknames'),
 
     // Name Generators
     generateName: () => {
-        const first = Math.random() > 0.5 ?
-            SRD_NAMES.first[Math.floor(Math.random() * SRD_NAMES.first.length)] :
-            SRD_NAMES.nicknames[Math.floor(Math.random() * SRD_NAMES.nicknames.length)]
+        const nicknames = useReferenceStore.getState().tables?.nicknames || []
 
+        // 50% chance of First Last, 50% chance of Nickname (as Call Sign)
+        // User request emphasized the "Bliss...Zero" list. Let's weigh it heavily or just use it?
+        // "ensure users can roll for these fields too during character creation: ... 2 Bliss ... 20 Zero"
+        // I will make it a pure choice in the UI, but for a generic "generateName", I'll mix them.
+
+        const mode = Math.random()
+
+        if (mode > 0.5 && nicknames.length > 0) {
+            return nicknames[Math.floor(Math.random() * nicknames.length)]
+        }
+
+        const first = SRD_NAMES.first[Math.floor(Math.random() * SRD_NAMES.first.length)]
         const last = Math.random() > 0.5 ?
             SRD_NAMES.last[Math.floor(Math.random() * SRD_NAMES.last.length)] :
             SRD_NAMES.surnames[Math.floor(Math.random() * SRD_NAMES.surnames.length)]
@@ -86,7 +72,5 @@ export const OracleService = {
         return `${first} ${last}`
     },
 
-    generateShipName: () => {
-        return SRD_NAMES.shipNames[Math.floor(Math.random() * SRD_NAMES.shipNames.length)]
-    }
+    generateShipName: () => getRandomOption('shipName')
 }

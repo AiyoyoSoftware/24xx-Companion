@@ -6,10 +6,9 @@ export const SKILL_DOMAINS = [
         borderColor: 'border-red-500',
         bg: 'bg-red-950/30',
         skills: [
-            { id: 'brawl', name: 'Brawl', desc: 'Unarmed combat, grappling, and using the environment as a weapon.' },
-            { id: 'marksmanship', name: 'Marksmanship', desc: 'Precision with pistols, rifles, and mounted turrets.' },
-            { id: 'melee', name: 'Melee', desc: 'Proficiency with blades, clubs, and energy weapons.' },
-            { id: 'tactics', name: 'Tactics', desc: 'Evaluating battlefield threats, finding cover, and coordinating team strikes.' }
+            { id: 'hand-to-hand', name: 'Hand-to-hand', desc: 'Unarmed combat, grappling, and melee weapons.' },
+            { id: 'shooting', name: 'Shooting', desc: 'Precision with pistols, rifles, and mounted turrets.' },
+            { id: 'explosives', name: 'Explosives', desc: 'Demolitions, grenade handling, and bomb disposal.' }
         ]
     },
     {
@@ -19,10 +18,10 @@ export const SKILL_DOMAINS = [
         borderColor: 'border-green-500',
         bg: 'bg-green-950/30',
         skills: [
-            { id: 'agility', name: 'Agility', desc: 'Acrobatics, dodging, and maintaining balance in zero-G or precarious heights.' },
-            { id: 'endurance', name: 'Endurance', desc: 'Resisting toxins, extreme temperatures, and pushing past exhaustion.' },
-            { id: 'infiltrate', name: 'Infiltrate', desc: 'Picking locks, bypassing physical sensors, and silent movement.' },
-            { id: 'survival', name: 'Survival', desc: 'Tracking, foraging, and navigating hostile alien wilderness.' }
+            { id: 'climbing', name: 'Climbing', desc: 'Scaling walls, cliffs, and navigating vertical terrain.' },
+            { id: 'running', name: 'Running', desc: 'Sprinting, endurance, and parkour-like movement.' },
+            { id: 'stealth', name: 'Stealth', desc: 'Silent movement, hiding, and remaining undetected.' },
+            { id: 'labor', name: 'Labor', desc: 'Heavy lifting, hauling, and physical toil.' }
         ]
     },
     {
@@ -32,10 +31,11 @@ export const SKILL_DOMAINS = [
         borderColor: 'border-blue-500',
         bg: 'bg-blue-950/30',
         skills: [
-            { id: 'cybernetics', name: 'Cybernetics', desc: 'Modifying androids, installing neural links, and "healing" machines.' },
-            { id: 'electronics', name: 'Electronics', desc: 'Hacking terminals, rewiring circuits, and signal interception.' },
-            { id: 'mechanics', name: 'Mechanics', desc: 'Repairing engines, structural engineering, and heavy machinery operation.' },
-            { id: 'pilot', name: 'Pilot', desc: 'Handling atmospheric craft, starships, and land-speeders.' }
+            { id: 'electronics', name: 'Electronics', desc: 'Hacking, rewiring circuits, and signal interception.' },
+            { id: 'engines', name: 'Engines', desc: 'Repairing and maintaining vehicle and starship engines.' },
+            { id: 'hacking', name: 'Hacking', desc: 'Breaching digital security and accessing restricted data.' },
+            { id: 'piloting', name: 'Piloting', desc: 'Handling atmospheric craft, starships, and land-speeders.' },
+            { id: 'spacewalking', name: 'Spacewalking', desc: 'Operating effectively in zero-G and vacuum environments.' }
         ]
     },
     {
@@ -45,10 +45,7 @@ export const SKILL_DOMAINS = [
         borderColor: 'border-purple-500',
         bg: 'bg-purple-950/30',
         skills: [
-            { id: 'analysis', name: 'Analysis', desc: 'Scanning data-slugs, identifying substances, and forensic investigation.' },
-            { id: 'medicine', name: 'Medicine', desc: 'Treating biological wounds, pharmacology, and emergency surgery.' },
-            { id: 'resolve', name: 'Resolve', desc: 'Maintaining focus under pressure and resisting the Fear of Titans.' },
-            { id: 'scholar', name: 'Scholar', desc: 'Knowledge of history, alien cultures, and corporate law.' }
+            { id: 'tracking', name: 'Tracking', desc: 'Following trails, locating targets, and forensic analysis.' }
         ]
     },
     {
@@ -58,10 +55,10 @@ export const SKILL_DOMAINS = [
         borderColor: 'border-yellow-500',
         bg: 'bg-yellow-950/30',
         skills: [
-            { id: 'command', name: 'Command', desc: 'Leadership, boosting ally morale, and intimidating enemies.' },
-            { id: 'deception', name: 'Deception', desc: 'Disguise, forgery, and lying to authorities or AI.' },
-            { id: 'negotiation', name: 'Negotiation', desc: 'Trading, bartering, and finding common ground with hostiles.' },
-            { id: 'vibe', name: 'Vibe', desc: 'Reading a room, detecting lies, and "streetwise" intuition.' }
+            { id: 'connections', name: 'Connections', desc: 'Finding contacts, sourcing gear, and knowing people.' },
+            { id: 'deception', name: 'Deception', desc: 'Lying, disguising, and misleading others.' },
+            { id: 'intimidation', name: 'Intimidation', desc: 'Coercing others through fear or threats.' },
+            { id: 'persuasion', name: 'Persuasion', desc: 'Convincing others through reason, charm, or diplomacy.' }
         ]
     }
 ]

@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { useCharacterStore } from '../store/characterStore'
 import { useReferenceStore } from '../store/referenceStore'
 import { getTheme, THEMES } from '../utils/theme'
-import { User, Cpu, Skull, ArrowRight, ArrowLeft, Check, Dices } from 'lucide-react'
+import { User, Cpu, Skull, ArrowRight, ArrowLeft, Check, Dices, Smile, Anchor } from 'lucide-react'
 import { OracleService } from '../services/oracleService'
 
 export function CharacterCreation() {
     const navigate = useNavigate()
-    const { resetCharacter, setOrigin, setSkill, addTrait, setName, toggleSpecialty } = useCharacterStore()
+    const { resetCharacter, setOrigin, setSkill, addTrait, setName, toggleSpecialty, setDemeanor, setShipName } = useCharacterStore()
     const { domains, skills: allSkills, specialties: storedSpecialties } = useReferenceStore()
 
     const [step, setStep] = useState(1) // 1: Origin, 2: Customization, 3: Identity
@@ -17,7 +17,9 @@ export function CharacterCreation() {
         skills: {}, // { skillName: rank }
         traits: [], // For Alien/Android
         name: '',
-        specialty: ''
+        specialty: '',
+        demeanor: '',
+        shipName: ''
     })
 
     const theme = getTheme(selection.origin)
@@ -75,7 +77,12 @@ export function CharacterCreation() {
             setSelection(prev => ({ ...prev, skills: {}, traits: [] }))
             setStep(2)
         } else if (step === 2) {
-            setSelection(prev => ({ ...prev, name: OracleService.generateName() }))
+            setSelection(prev => ({
+                ...prev,
+                name: OracleService.generateName(),
+                demeanor: OracleService.rollDemeanor(),
+                shipName: OracleService.generateShipName()
+            }))
             setStep(3)
         } else {
             // Finalize
@@ -83,6 +90,10 @@ export function CharacterCreation() {
             setOrigin(selection.origin)
             setName(selection.name)
             if (selection.specialty) toggleSpecialty(selection.specialty)
+
+            // New fields
+            if (setDemeanor) setDemeanor(selection.demeanor)
+            if (setShipName) setShipName(selection.shipName)
 
             Object.entries(selection.skills).forEach(([name, rank]) => {
                 setSkill(name, rank)
@@ -110,8 +121,8 @@ export function CharacterCreation() {
                         key={opt.id}
                         onClick={() => setSelection({ ...selection, origin: opt.id })}
                         className={`p-6 rounded-xl border-2 text-left transition-all ${selection.origin === opt.id
-                                ? `border-cyan-500 bg-cyan-900/20 shadow-[0_0_15px_rgba(6,182,212,0.3)]`
-                                : 'border-gray-800 hover:border-gray-600 bg-gray-900/50'
+                            ? `border-cyan-500 bg-cyan-900/20 shadow-[0_0_15px_rgba(6,182,212,0.3)]`
+                            : 'border-gray-800 hover:border-gray-600 bg-gray-900/50'
                             }`}
                     >
                         <div className="flex items-center gap-4">
@@ -196,8 +207,8 @@ export function CharacterCreation() {
                                     key={opt}
                                     onClick={() => setSelection(prev => ({ ...prev, traits: [opt] }))}
                                     className={`p-3 rounded border text-sm transition-all ${selection.traits.includes(opt)
-                                            ? 'bg-green-900/30 border-green-500 text-green-400'
-                                            : 'bg-gray-800 border-gray-700 text-gray-500'
+                                        ? 'bg-green-900/30 border-green-500 text-green-400'
+                                        : 'bg-gray-800 border-gray-700 text-gray-500'
                                         }`}
                                 >
                                     {opt}
@@ -243,7 +254,7 @@ export function CharacterCreation() {
             <h2 className="text-xl font-bold text-center text-cyan-400 mb-6">FINALIZE</h2>
 
             <div className="space-y-2">
-                <label className="text-xs uppercase text-gray-500 font-bold">Name</label>
+                <label className="text-xs uppercase text-gray-500 font-bold flex items-center gap-1"><User size={12} /> Name</label>
                 <div className="flex gap-2">
                     <input
                         className="flex-1 bg-black/40 border border-gray-700 rounded p-3 text-lg font-bold"
@@ -258,6 +269,36 @@ export function CharacterCreation() {
             </div>
 
             <div className="space-y-2">
+                <label className="text-xs uppercase text-gray-500 font-bold flex items-center gap-1"><Smile size={12} /> Demeanor</label>
+                <div className="flex gap-2">
+                    <input
+                        className="flex-1 bg-black/40 border border-gray-700 rounded p-3 font-bold"
+                        value={selection.demeanor}
+                        onChange={e => setSelection({ ...selection, demeanor: e.target.value })}
+                        placeholder="e.g. Grumpy, Cheerful"
+                    />
+                    <button onClick={() => setSelection({ ...selection, demeanor: OracleService.rollDemeanor() })} className="bg-gray-800 p-3 rounded border border-gray-700 hover:bg-cyan-900/30 hover:text-cyan-400">
+                        <Dices />
+                    </button>
+                </div>
+            </div>
+
+            <div className="space-y-2">
+                <label className="text-xs uppercase text-gray-500 font-bold flex items-center gap-1"><Anchor size={12} /> Ship Name</label>
+                <div className="flex gap-2">
+                    <input
+                        className="flex-1 bg-black/40 border border-gray-700 rounded p-3 font-bold"
+                        value={selection.shipName}
+                        onChange={e => setSelection({ ...selection, shipName: e.target.value })}
+                        placeholder="e.g. Serenity"
+                    />
+                    <button onClick={() => setSelection({ ...selection, shipName: OracleService.rollShipName() })} className="bg-gray-800 p-3 rounded border border-gray-700 hover:bg-cyan-900/30 hover:text-cyan-400">
+                        <Dices />
+                    </button>
+                </div>
+            </div>
+
+            <div className="space-y-2">
                 <label className="text-xs uppercase text-gray-500 font-bold">Specialty</label>
                 <div className="flex flex-wrap gap-2">
                     {storedSpecialties.map(spec => (
@@ -265,8 +306,8 @@ export function CharacterCreation() {
                             key={spec}
                             onClick={() => setSelection(prev => ({ ...prev, specialty: spec }))}
                             className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${selection.specialty === spec
-                                    ? 'bg-cyan-600 border-cyan-400 text-white'
-                                    : 'bg-gray-900 border-gray-700 text-gray-500 hover:border-gray-500'
+                                ? 'bg-cyan-600 border-cyan-400 text-white'
+                                : 'bg-gray-900 border-gray-700 text-gray-500 hover:border-gray-500'
                                 }`}
                         >
                             {spec}
@@ -278,17 +319,6 @@ export function CharacterCreation() {
     )
 
     // Footer Navigation
-    const canIsProceed = () => {
-        if (step === 1) return true
-        if (step === 2) {
-            if (selection.origin === 'Human') return remaining === 0
-            if (selection.origin === 'Android') return remaining === 0 && selection.traits.length === 1
-            if (selection.origin === 'Alien') return selection.traits.length >= 2 && selection.traits[0] && selection.traits[1]
-        }
-        if (step === 3) return selection.name.length > 0 && selection.specialty.length > 0
-        return false
-    }
-
     const remaining = getMaxIncreases() - getTotalIncreases()
     const isValid = () => {
         if (step === 1) return true
@@ -297,7 +327,7 @@ export function CharacterCreation() {
             if (selection.origin === 'Android') return remaining === 0 && selection.traits.length > 0
             if (selection.origin === 'Alien') return selection.traits.filter(t => t && t.trim()).length >= 2
         }
-        return selection.name && selection.specialty
+        return selection.name && selection.specialty && selection.demeanor && selection.shipName
     }
 
     return (

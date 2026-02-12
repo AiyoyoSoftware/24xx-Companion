@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useReferenceStore } from '../store/referenceStore'
-import { Plus, Trash2, Save, RotateCcw, Box, Zap, Book, User } from 'lucide-react'
+import { Plus, Trash2, Save, RotateCcw, Box, Zap, Book, User, Table } from 'lucide-react'
 import { getTheme, THEMES } from '../utils/theme'
 import { useCharacterStore } from '../store/characterStore'
 
@@ -11,6 +11,7 @@ export function Editor() {
         specialties, addSpecialty, removeSpecialty,
         traits, addTrait, removeTrait,
         gear, addGear, removeGear,
+        tables, addTableEntry, removeTableEntry, resetTable,
         resetDefaults, importData, exportData
     } = useReferenceStore()
 
@@ -18,7 +19,7 @@ export function Editor() {
     const origin = useCharacterStore(state => state.origin)
     const theme = getTheme(origin)
 
-    const [activeTab, setActiveTab] = useState('skills') // skills, domains, specialties, traits, gear
+    const [activeTab, setActiveTab] = useState('skills') // skills, domains, specialties, traits, gear, tables
     const [confirmReset, setConfirmReset] = useState(false)
 
     // Skill Form State
@@ -27,6 +28,10 @@ export function Editor() {
     const [newSpecialty, setNewSpecialty] = useState('')
     const [newTrait, setNewTrait] = useState('')
     const [newGear, setNewGear] = useState('')
+
+    // Tables Form State
+    const [activeTable, setActiveTable] = useState('nicknames')
+    const [newTableEntry, setNewTableEntry] = useState('')
 
     const handleReset = () => {
         if (confirmReset) {
@@ -108,6 +113,13 @@ export function Editor() {
         }
     }
 
+    const handleAddTableEntry = () => {
+        if (newTableEntry.trim()) {
+            addTableEntry(activeTable, newTableEntry.trim())
+            setNewTableEntry('')
+        }
+    }
+
     const TabButton = ({ id, label, icon: Icon }) => (
         <button
             onClick={() => setActiveTab(id)}
@@ -152,6 +164,7 @@ export function Editor() {
                     <TabButton id="specialties" label="Specialties" icon={User} />
                     <TabButton id="traits" label="Traits" icon={Zap} />
                     <TabButton id="gear" label="Gear" icon={Box} />
+                    <TabButton id="tables" label="Tables" icon={Table} />
                 </div>
 
                 {/* SKILLS EDITOR */}
@@ -333,6 +346,62 @@ export function Editor() {
                                 <div key={i} className="flex justify-between items-center bg-gray-800/50 p-2 px-3 rounded border border-gray-700">
                                     <span className="text-gray-300">{item}</span>
                                     <button onClick={() => removeGear(i)} className="text-gray-600 hover:text-red-400">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* TABLES EDITOR */}
+                {activeTab === 'tables' && (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                        {/* Table Selector */}
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                            {Object.keys(tables).map(tableName => (
+                                <button
+                                    key={tableName}
+                                    onClick={() => setActiveTable(tableName)}
+                                    className={`px-3 py-1 rounded text-xs uppercase font-bold border transition-colors ${activeTable === tableName
+                                            ? 'bg-cyan-900 border-cyan-500 text-cyan-100'
+                                            : 'bg-gray-900 border-gray-700 text-gray-500'
+                                        }`}
+                                >
+                                    {tableName}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-1">
+                            <h3 className="text-center text-xs font-bold text-gray-500 uppercase py-2">Editing: {activeTable}</h3>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <input
+                                className="flex-1 bg-black/40 border border-gray-700 rounded p-2 text-sm"
+                                placeholder={`New ${activeTable} entry...`}
+                                value={newTableEntry}
+                                onChange={e => setNewTableEntry(e.target.value)}
+                                onKeyDown={e => e.key === 'Enter' && handleAddTableEntry()}
+                            />
+                            <button onClick={handleAddTableEntry} className="bg-cyan-700 hover:bg-cyan-600 px-4 rounded text-white">
+                                <Plus />
+                            </button>
+                        </div>
+
+                        <button
+                            onClick={() => resetTable(activeTable)}
+                            className="text-xs text-red-400 hover:text-red-300 underline"
+                        >
+                            Reset {activeTable} to defaults
+                        </button>
+
+                        <div className="grid grid-cols-1 gap-2 max-h-[60vh] overflow-y-auto pr-2">
+                            {(tables[activeTable] || []).map((entry, i) => (
+                                <div key={i} className="flex justify-between items-center bg-gray-800/50 p-2 px-3 rounded border border-gray-700 hover:border-gray-600">
+                                    <span className="text-gray-300 text-sm">{entry}</span>
+                                    <button onClick={() => removeTableEntry(activeTable, i)} className="text-gray-600 hover:text-red-400">
                                         <Trash2 size={16} />
                                     </button>
                                 </div>

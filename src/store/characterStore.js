@@ -8,6 +8,8 @@ export const useCharacterStore = create(
             specialty: [], // Array of strings (SRD Specialties)
             origin: 'Human', // Default to Human
             credits: 2, // Default start: 2 credits
+            demeanor: '',
+            shipName: '',
             skills: {},
             traits: [], // Array of strings (Descriptors/Alien traits)
             gear: [
@@ -15,6 +17,8 @@ export const useCharacterStore = create(
             ],
 
             setName: (name) => set({ name }),
+            setDemeanor: (demeanor) => set({ demeanor }),
+            setShipName: (shipName) => set({ shipName }),
             setOrigin: (origin) => set({ origin }),
 
             // Specialties (formerly Concepts)
@@ -58,6 +62,8 @@ export const useCharacterStore = create(
                 specialty: [],
                 origin: 'Human',
                 credits: 2,
+                demeanor: '',
+                shipName: '',
                 skills: {},
                 traits: [], // Reset to empty array
                 gear: ["Comm (Smartphone)"]
@@ -65,17 +71,20 @@ export const useCharacterStore = create(
         }),
         {
             name: '24xx-character-storage',
-            version: 7, // Bump version
+            version: 8, // Bump version
             migrate: (persistedState, version) => {
-                if (version < 7) {
+                if (version < 8) {
                     return {
+                        ...persistedState,
                         name: persistedState.name || '',
-                        specialty: persistedState.concept || [], // Migrate concept to specialty
+                        specialty: persistedState.concept || persistedState.specialty || [],
                         origin: persistedState.origin || 'Human',
-                        credits: 2,
-                        skills: {},
-                        traits: [],
-                        gear: ["Comm (Smartphone)"]
+                        credits: persistedState.credits || 2,
+                        skills: persistedState.skills || {},
+                        traits: persistedState.traits || [],
+                        gear: persistedState.gear || ["Comm (Smartphone)"],
+                        demeanor: persistedState.demeanor || '',
+                        shipName: persistedState.shipName || ''
                     }
                 }
                 return persistedState

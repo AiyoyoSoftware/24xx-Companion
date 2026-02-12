@@ -3,6 +3,9 @@ import { Layout } from './components/Layout'
 import { Home } from './pages/Home'
 import { Character } from './pages/Character'
 import { CharacterCreation } from './pages/CharacterCreation'
+import { Journal } from './pages/Journal'
+import { Editor } from './pages/Editor'
+import { Settings } from './pages/Settings'
 
 function App() {
   return (

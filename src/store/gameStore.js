@@ -69,8 +69,14 @@ export const useGameStore = create((set, get) => ({
             primaryRoll: primaryRoll.total,
             total,
             outcome,
-            status: 'pending' // Pending narrative resolution if needed, though SRD is immediate.
+            status: 'resolved' // Auto-resolved
         }
+
+        // Auto-log to Journal
+        useJournalStore.getState().addEntry({
+            type: 'roll',
+            content: rollData
+        })
 
         set((state) => ({
             rollHistory: [rollData, ...state.rollHistory],
@@ -80,24 +86,5 @@ export const useGameStore = create((set, get) => ({
         return rollData
     },
 
-    resolveRoll: (note) => {
-        const state = get()
-        const { currentRoll } = state
-        if (!currentRoll) return
-
-        const finalRoll = { ...currentRoll, status: 'resolved', note }
-
-        // Log to Journal
-        useJournalStore.getState().addEntry({
-            type: 'roll',
-            content: finalRoll
-        })
-
-        set({
-            currentRoll: finalRoll,
-            rollHistory: [finalRoll, ...state.rollHistory.slice(1)]
-        })
-    },
-
     clearHistory: () => set({ rollHistory: [], currentRoll: null })
-}))
+}));

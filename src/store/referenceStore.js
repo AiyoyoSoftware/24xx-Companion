@@ -26,7 +26,7 @@ const INITIAL_GEAR = [
 
 const INITIAL_TABLES = {
     nicknames: [
-        "Bliss", "Crater", "Dart", "Edge", "Fuse", "Gray", "Huggy", "Ice", "Jinx",
+        "Ace", "Bliss", "Crater", "Dart", "Edge", "Fuse", "Gray", "Huggy", "Ice", "Jinx",
         "Killer", "Lucky", "Mix", "Nine", "Prof", "Red", "Sunny", "Treble", "V8", "Zero"
     ],
     demeanor: [
@@ -43,6 +43,33 @@ const INITIAL_TABLES = {
         "Deal with an unusual threat", "Investigate something inexplicable", "Retrieve a thing from a location",
         "Escort a VIP", "Sabotage a facility", "Rescue a prisoner", "Survey a dangerous planet",
         "Negotiate a treaty", "Smuggle contraband", "Defend a settlement"
+    ],
+    contacts: [
+        "Arcimboldo, quirky tech dealer & tinkerer",
+        "Aurora, wealthy collector of unique items",
+        "Blackout, quiet evidence removal specialist",
+        "Bleach, wry janitor android turned assassin",
+        "Bron, dour security chief with a metal arm",
+        "Bullet, no-nonsense android gun runner",
+        "Carryout, cocky courier with fast cyber-legs",
+        "Fisher, eager street kid looking for a crew",
+        "Ginseng, people-loving drug dealer",
+        "Hot Ticket, extremely cautious fence",
+        "Kaiser, grinning loan shark in a silver suit",
+        "Osiris, tired, street-level sawbones",
+        "Powder Blue, android fixer, generous rates",
+        "Reacher, sharp mercenary tac squad leader",
+        "Rhino, thickheaded, bighearted bodyguard",
+        "Sam, plucky journalist, likely to get killed",
+        "Shifter, hard-working chop-shop owner",
+        "Walleye, businesslike information broker",
+        "Whistler, smiling cabbie/getaway driver",
+        "“X,” unflappable broker for an unnamed corp"
+    ],
+    job_search: [
+        "Nothing. Owe somebody to get in on a job.",
+        "Found a job, but something seems off.",
+        "Choose between 2 jobs."
     ]
 }
 

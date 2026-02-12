@@ -363,12 +363,12 @@ export function Editor() {
                                 <button
                                     key={tableName}
                                     onClick={() => setActiveTable(tableName)}
-                                    className={`px-3 py-1 rounded text-xs uppercase font-bold border transition-colors ${activeTable === tableName
-                                            ? 'bg-cyan-900 border-cyan-500 text-cyan-100'
-                                            : 'bg-gray-900 border-gray-700 text-gray-500'
+                                    className={`px-3 py-1 rounded text-xs uppercase font-bold border transition-colors whitespace-nowrap ${activeTable === tableName
+                                        ? 'bg-cyan-900 border-cyan-500 text-cyan-100'
+                                        : 'bg-gray-900 border-gray-700 text-gray-500'
                                         }`}
                                 >
-                                    {tableName}
+                                    {tableName.replace(/_/g, ' ')}
                                 </button>
                             ))}
                         </div>

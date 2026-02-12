@@ -27,10 +27,11 @@ export const OracleService = {
 
     // Dynamic Tables
     getDemeanors: () => useReferenceStore.getState().tables?.demeanor || [],
-    getContacts: () => [], // Contacts removed from SRD request or need to be added to tables if desired. Returning empty for now to avoid crash if used.
+    getContacts: () => useReferenceStore.getState().tables?.contacts || [],
     getJobs: () => useReferenceStore.getState().tables?.mission || [],
     getShipNames: () => useReferenceStore.getState().tables?.shipName || [],
     getNicknames: () => useReferenceStore.getState().tables?.nicknames || [],
+    getJobOracles: () => useReferenceStore.getState().tables?.job_search || [],
 
     // RNG Methods
     rollSpecialty: () => {
@@ -45,7 +46,9 @@ export const OracleService = {
         return list.length > 0 ? list[Math.floor(Math.random() * list.length)] : "Unknown"
     },
     rollDemeanor: () => getRandomOption('demeanor'),
-    rollJob: () => getRandomOption('mission'),
+    rollJob: () => getRandomOption('mission'), // This generates a Mission description
+    rollJobSearch: () => getRandomOption('job_search'), // This generates the result of Looking for Work
+    rollContact: () => getRandomOption('contacts'),
     rollShipName: () => getRandomOption('shipName'),
     rollNickname: () => getRandomOption('nicknames'),
 

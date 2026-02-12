@@ -14,6 +14,8 @@ rm -rf .git
 
 echo "Initializing git repository..."
 git init
+echo "Creating .nojekyll file..."
+touch .nojekyll
 git add -A
 git commit -m 'Deploy to GitHub Pages'
 

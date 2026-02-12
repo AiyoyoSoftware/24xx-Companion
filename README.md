@@ -6,7 +6,7 @@ A web companion app for running solo or GM-less 24xx RPG games.
 
 ## About 24xx
 
-24xx is a rules-light tabletop RPG system by Jason Tocci that uses dice pools for resolution. This companion app helps you manage a character, roll dice, track resources, and use oracle tables for solo or GM-less play.
+24xx is a rules-light tabletop RPG system by Jason Tocci that uses dice pools for resolution. This **community made** companion app helps you manage a character, roll dice, track resources, and use oracle tables for solo or GM-less play.
 
 ## Features
 

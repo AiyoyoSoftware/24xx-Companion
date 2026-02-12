@@ -1,6 +1,7 @@
 import { useCharacterStore } from '../store/characterStore'
 import { useGameStore } from '../store/gameStore'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Dices, AlertTriangle, Shield, Zap, Skull, HelpingHand, MousePointerClick, User } from 'lucide-react'
 import { SkillsModal } from '../components/SkillsModal'

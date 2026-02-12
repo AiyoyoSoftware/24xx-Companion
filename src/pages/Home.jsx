@@ -1,7 +1,7 @@
 import { useCharacterStore } from '../store/characterStore'
 import { useGameStore } from '../store/gameStore'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Dices, AlertTriangle, Shield, Zap, Skull, HelpingHand, MousePointerClick, User } from 'lucide-react'
 import { SkillsModal } from '../components/SkillsModal'
 import { OracleService } from '../services/oracleService'
@@ -47,9 +47,9 @@ export function Home() {
                 <div className="mb-6 p-6 rounded-xl bg-gradient-to-r from-cyan-900/40 to-blue-900/40 border border-cyan-500/30 animate-in slide-in-from-top duration-500">
                     <h2 className="text-xl font-bold text-cyan-400 mb-2">Welcome to 24XX</h2>
                     <p className="text-sm text-gray-300 mb-4">You have no character data. Create a new character to get started.</p>
-                    <a href="/create" className="block w-full text-center bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg shadow-lg transition-colors">
+                    <Link to="/create" className="block w-full text-center bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-3 rounded-lg shadow-lg transition-colors">
                         Create Character
-                    </a>
+                    </Link>
                 </div>
             )}
 

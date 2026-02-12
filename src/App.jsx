@@ -9,7 +9,7 @@ import { Settings } from './pages/Settings'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/24xx-Companion">
       <Routes>
         <Route path="/create" element={<CharacterCreation />} />
         <Route path="/" element={<Layout />}>

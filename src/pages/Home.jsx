@@ -3,18 +3,20 @@ import { useGameStore } from '../store/gameStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Dices, AlertTriangle, Shield, Zap, Skull, HelpingHand, MousePointerClick, User } from 'lucide-react'
+import { Dices, AlertTriangle, Shield, Zap, Skull, HelpingHand, MousePointerClick, User, CheckCircle2 } from 'lucide-react'
 import { SkillsModal } from '../components/SkillsModal'
 import { OracleService } from '../services/oracleService'
+import { MissionCompleteModal } from '../components/MissionCompleteModal'
 
 export function Home() {
-    const { skills, credits, gear } = useCharacterStore()
+    const { name, skills, credits, gear } = useCharacterStore()
     const { rollDice, rollHistory, currentRoll } = useGameStore()
 
     const [selectedSkill, setSelectedSkill] = useState(null) // null = Untrained (d6)
     const [isHindered, setIsHindered] = useState(false)
     const [isHelping, setIsHelping] = useState(false)
     const [oracleResult, setOracleResult] = useState({ contact: null, job: null })
+    const [isMissionCompleteOpen, setIsMissionCompleteOpen] = useState(false)
 
     const [modal, setModal] = useState({
         isOpen: false,
@@ -57,7 +59,14 @@ export function Home() {
             {/* Header / Current Status */}
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-cyan-400">24xx</h1>
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
+                    <button
+                        onClick={() => setIsMissionCompleteOpen(true)}
+                        className="bg-green-900/30 hover:bg-green-900/50 text-green-400 border border-green-500/30 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-1"
+                    >
+                        <CheckCircle2 size={14} />
+                        Complete Job
+                    </button>
                     <div className="flex flex-col items-center">
                         <div className="flex items-center gap-1 text-yellow-400">
                             <span className="font-bold text-lg">₡{credits}</span>
@@ -309,6 +318,12 @@ export function Home() {
                     </div>
                 </div>
             )}
+
+            <MissionCompleteModal
+                isOpen={isMissionCompleteOpen}
+                onClose={() => setIsMissionCompleteOpen(false)}
+                characterName={name || 'Operator'}
+            />
         </div>
     )
 }

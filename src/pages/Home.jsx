@@ -3,13 +3,13 @@ import { useGameStore } from '../store/gameStore'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Dices, AlertTriangle, Shield, Zap, Skull, HelpingHand, MousePointerClick, User, CheckCircle2 } from 'lucide-react'
+import { Dices, AlertTriangle, HelpingHand, User, CheckCircle2 } from 'lucide-react'
 import { SkillsModal } from '../components/SkillsModal'
 import { OracleService } from '../services/oracleService'
 import { MissionCompleteModal } from '../components/MissionCompleteModal'
 
 export function Home() {
-    const { name, skills, credits, gear } = useCharacterStore()
+    const { name, skills, credits } = useCharacterStore()
     const { rollDice, rollHistory, currentRoll } = useGameStore()
 
     const [selectedSkill, setSelectedSkill] = useState(null) // null = Untrained (d6)
@@ -21,7 +21,7 @@ export function Home() {
     const [modal, setModal] = useState({
         isOpen: false,
         type: 'skills',
-        onSelect: () => { }
+        onSelect: setSelectedSkill
     })
 
     const handleRoll = () => {
@@ -113,7 +113,7 @@ export function Home() {
                                 </button>
 
                                 <button
-                                    onClick={() => setModal({ isOpen: true, type: 'skills' })}
+                                    onClick={() => setModal({ isOpen: true, type: 'skills', onSelect: setSelectedSkill })}
                                     className={`px-3 py-2 rounded-lg border text-sm transition-all flex items-center gap-2 ${selectedSkill ? 'bg-cyan-900 border-cyan-500 text-cyan-100' : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-500'}`}
                                 >
                                     {selectedSkill ? (
@@ -323,6 +323,14 @@ export function Home() {
                 isOpen={isMissionCompleteOpen}
                 onClose={() => setIsMissionCompleteOpen(false)}
                 characterName={name || 'Operator'}
+            />
+
+            <SkillsModal
+                isOpen={modal.isOpen && modal.type === 'skills'}
+                onClose={() => setModal(prev => ({ ...prev, isOpen: false }))}
+                mode="select"
+                skills={skills}
+                onSelect={modal.onSelect}
             />
         </div>
     )

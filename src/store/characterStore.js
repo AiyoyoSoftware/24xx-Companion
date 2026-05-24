@@ -1,20 +1,56 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+const DEFAULT_CHARACTER = {
+    name: '',
+    specialty: [],
+    origin: 'Human',
+    credits: 2,
+    demeanor: '',
+    shipName: '',
+    skills: {},
+    traits: [],
+    gear: ["Comm (Smartphone)"],
+    archivedCharacters: null,
+    activeCharacterId: null
+}
+
+const ensureArray = (value) => {
+    if (Array.isArray(value)) return value
+    if (value) return [value]
+    return []
+}
+
+const selectPersistedCharacter = (state = {}) => {
+    if (!state.characters || typeof state.characters !== 'object') return state
+
+    const characters = Object.values(state.characters)
+    return state.characters[state.activeCharacterId] || characters[0] || {}
+}
+
+const normalizePersistedCharacter = (state = {}) => {
+    const character = selectPersistedCharacter(state)
+
+    return {
+        ...state,
+        name: character.name ?? state.name ?? DEFAULT_CHARACTER.name,
+        specialty: ensureArray(character.specialty ?? character.concept ?? state.specialty ?? state.concept),
+        origin: character.origin ?? state.origin ?? DEFAULT_CHARACTER.origin,
+        credits: character.credits ?? state.credits ?? DEFAULT_CHARACTER.credits,
+        demeanor: character.demeanor ?? state.demeanor ?? DEFAULT_CHARACTER.demeanor,
+        shipName: character.shipName ?? state.shipName ?? DEFAULT_CHARACTER.shipName,
+        skills: character.skills ?? state.skills ?? DEFAULT_CHARACTER.skills,
+        traits: character.traits ?? state.traits ?? DEFAULT_CHARACTER.traits,
+        gear: character.gear ?? state.gear ?? DEFAULT_CHARACTER.gear,
+        archivedCharacters: state.archivedCharacters ?? state.characters ?? DEFAULT_CHARACTER.archivedCharacters,
+        activeCharacterId: state.activeCharacterId ?? DEFAULT_CHARACTER.activeCharacterId
+    }
+}
+
 export const useCharacterStore = create(
     persist(
         (set, get) => ({
-            name: '',
-            specialty: [], // Array of strings (SRD Specialties)
-            origin: 'Human', // Default to Human
-            credits: 2, // Default start: 2 credits
-            demeanor: '',
-            shipName: '',
-            skills: {},
-            traits: [], // Array of strings (Descriptors/Alien traits)
-            gear: [
-                "Comm (Smartphone)"
-            ],
+            ...DEFAULT_CHARACTER,
 
             setName: (name) => set({ name }),
             setDemeanor: (demeanor) => set({ demeanor }),
@@ -58,36 +94,34 @@ export const useCharacterStore = create(
             })),
 
             resetCharacter: () => set({
-                name: '',
-                specialty: [],
-                origin: 'Human',
-                credits: 2,
-                demeanor: '',
-                shipName: '',
-                skills: {},
-                traits: [], // Reset to empty array
-                gear: ["Comm (Smartphone)"]
+                ...DEFAULT_CHARACTER,
+                archivedCharacters: get().archivedCharacters,
+                activeCharacterId: get().activeCharacterId
             })
         }),
         {
             name: '24xx-character-storage',
-            version: 8, // Bump version
+            version: 9,
+            partialize: (state) => ({
+                name: state.name,
+                specialty: state.specialty,
+                origin: state.origin,
+                credits: state.credits,
+                demeanor: state.demeanor,
+                shipName: state.shipName,
+                skills: state.skills,
+                traits: state.traits,
+                gear: state.gear,
+                archivedCharacters: state.archivedCharacters,
+                activeCharacterId: state.activeCharacterId
+            }),
+            merge: (persistedState, currentState) => ({
+                ...currentState,
+                ...normalizePersistedCharacter(persistedState)
+            }),
             migrate: (persistedState, version) => {
-                if (version < 8) {
-                    return {
-                        ...persistedState,
-                        name: persistedState.name || '',
-                        specialty: persistedState.concept || persistedState.specialty || [],
-                        origin: persistedState.origin || 'Human',
-                        credits: persistedState.credits || 2,
-                        skills: persistedState.skills || {},
-                        traits: persistedState.traits || [],
-                        gear: persistedState.gear || ["Comm (Smartphone)"],
-                        demeanor: persistedState.demeanor || '',
-                        shipName: persistedState.shipName || ''
-                    }
-                }
-                return persistedState
+                if (version < 9) return normalizePersistedCharacter(persistedState)
+                return normalizePersistedCharacter(persistedState)
             }
         }
     )

@@ -1,8 +1,13 @@
 import { useCharacterStore } from '../store/characterStore'
-import { useGameStore } from '../store/gameStore'
 import { useNavigate } from 'react-router-dom'
 import { getTheme } from '../utils/theme'
-import { Trash2, AlertOctagon, Save, UserPlus } from 'lucide-react'
+import { Trash2, AlertOctagon, UserPlus } from 'lucide-react'
+
+const APP_STORAGE_KEYS = [
+    '24xx-character-storage',
+    '24xx-journal-storage',
+    '24xx-reference-storage'
+]
 
 export function Settings() {
     const { origin } = useCharacterStore() // Just for theming
@@ -11,9 +16,9 @@ export function Settings() {
 
     const handleWipeData = () => {
         if (confirm("WARNING: This will wipe ALL character and game data. This cannot be undone. Are you sure?")) {
-            localStorage.clear()
-            sessionStorage.clear()
-            window.location.href = '/' // reloading to root should re-init stores
+            APP_STORAGE_KEYS.forEach(key => localStorage.removeItem(key))
+            sessionStorage.removeItem('redirect')
+            window.location.href = '/24xx-Companion/'
             window.location.reload()
         }
     }
